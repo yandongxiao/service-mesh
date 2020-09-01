@@ -1,33 +1,34 @@
-# add repo
+# flagger(VMWorks) 特性
+#   1. 支持多种Service Mesh. 如果你想使用flagger，那么就需要有Service Mesh组件(Virtual Service)
+#   2. 指标监控灰度发布状态
+#   3. 通知(slack, Micronsof team)
+#
+# 1. add repo
 helm repo add flagger https://flagger.app
-
-# install crd
+# 2. install crd
 kubectl apply -f https://raw.githubusercontent.com/weaveworks/flagger/master/artifacts/flagger/crd.yaml
-
-# 部署flagger with istio
+# 3. 部署flagger with istio
 helm upgrade -i flagger flagger/flagger \
 --namespace=istio-system \
 --set crd.create=false \
 --set meshProvider=istio \
 --set metricsServer=http://prometheus.istio-system:9090
-
-#slack
-# https://api.slack.com/messaging/webhooks
+# 4. slack
+#    https://api.slack.com/messaging/webhooks
 helm upgrade -i flagger flagger/flagger \
 --namespace=istio-system \
 --set crd.create=false \
 --set slack.url=https://hooks.slack.com/services/xxxxxx \
 --set slack.channel=general \
 --set slack.user=flagger
-
-# grafana
+# 5. grafana
 helm upgrade -i flagger-grafana flagger/grafana \
 --namespace=istio-system \
 --set url=http://prometheus.istio-system:9090 \
 --set user=admin \
 --set password=admin
 
-# 部署flagger,或者下载repo直接执行
+# 部署flagger, 或者下载repo直接执行
 kubectl apply -k github.com/weaveworks/flagger//kustomize/istio
 
 # ingress for expose mesh
@@ -46,7 +47,7 @@ spec:
         protocol: HTTP
       hosts:
         - "*"
-        
+
 #部署应用和tester
 kubectl apply -k github.com/weaveworks/flagger//kustomize/tester
 #或者 先clone repo
@@ -95,7 +96,7 @@ spec:
     apiVersion: autoscaling/v2beta1
     kind: HorizontalPodAutoscaler
     name: httpbin
-  service:
+  service:  # virtual sevice
     # service port number
     port: 8000
     # container port number or name (optional)
@@ -103,7 +104,7 @@ spec:
     # Istio gateways (optional)
     gateways:
     - public-gateway.istio-system.svc.cluster.local
-  analysis:
+  analysis: # 灰度发布流程
     # schedule interval (default 60s)
     interval: 30s
     # max number of failed metric checks before rollback

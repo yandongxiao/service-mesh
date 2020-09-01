@@ -1,30 +1,50 @@
-# 安装fluxctl
+# cicd:
+#   code --> git --> CI_JOBS(UT, testing) --> 镜像仓库 --> 脚本 --> 线上
+#   脚本需要对镜像仓库有只读权限，对CI环境有读写权限
+#
+# gitops(pull request即可完成CICD的过程):
+#   你会有两个git repo，一个是应用的源代码，一个是配置的代码
+#   应用的原代码: code --> git --> CI_JOBS --> 镜像仓库
+#   配置的代码: code --> deploy operator --> 从镜像仓库拉取镜像 --> apply
+#   Deloy Opeator: 需要对镜像仓库有只读权限，需要对config repo有只读权限
+#
+# flux(VM Works公司): 声明式，自动同步，自动部署，基于代码(pull request)，而不是容器
+#
+# 安装flux
+# 1. 安装命令行工具：fluxctl
 brew install fluxctl
-
-# 创建ns
+# 2. 创建ns
 kubectl create ns flux
-
-# 部署flux, 先clone repo https://github.com/fluxcd/flux.git
-# 修改git 信息：https://github.com/fluxcd/flux/blob/master/deploy/flux-deployment.yaml
+# 3. 下载flux
+git clone repo https://github.com/fluxcd/flux.git
+# 4. 安装, deploy是flux的一个目录.  -k 等价于 --kustomize
 k apply -k deploy
 
-# 方法2
+#
+# 关联Flux和代码仓库(所以一个flux operator对应了一个仓库)
+# 方法一: 修改 git 配置信息：https://github.com/fluxcd/flux/blob/master/deploy/flux-deployment.yaml
+# 方法二：命令行方式
 fluxctl install \
 --git-user=xxx \
 --git-email=xxx@xxx \
 --git-url=git@github.com:xxx/smdemo \
 --namespace=flux | kubectl apply -f -
 
+#
+# flux有自己的Identity
+# 向gitlab中添加该SSH KEY, 为什么需要写权限？
+fluxctl identity
+# 将SSH KEY放入仓库
 # 写入deploy key
-export FLUX_FORWARD_NAMESPACE=flux
-#获取ssh key
-fluxctl identity --k8s-fwd-ns flux
+# export FLUX_FORWARD_NAMESPACE=flux
+# 获取ssh key
+# fluxctl identity --k8s-fwd-ns flux
 
 # 建demo ns,添加注入
 k create ns demo
 k label namespace demo istio-injection=enabled
 
-#### 添加httpbin 文件
+# 添加 httpbin 文件，向 config repo中添加yaml文件
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -33,7 +53,7 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  name: httpbin
+  name: httpbin   # 访问方式是: http://httpbin.demo
   labels:
     app: httpbin
 spec:
@@ -67,9 +87,9 @@ spec:
         name: httpbin
         ports:
         - containerPort: 80
-        
-        
-# 同步
+
+
+# 同步(默认五分钟，自动同步)
 fluxctl sync --k8s-fwd-ns flux
 
 # 添加sleep
