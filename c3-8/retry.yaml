@@ -1,3 +1,5 @@
+# 故障注入：5s延迟
+# 重试次数两次, 重试的配置是在被调用方
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:

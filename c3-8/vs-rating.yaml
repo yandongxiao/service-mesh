@@ -1,3 +1,4 @@
+# 故障注入：为rating服务添加2s钟的延迟
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
