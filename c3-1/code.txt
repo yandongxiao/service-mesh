@@ -1,3 +1,16 @@
-本课代码可在官方安装包下获取：
+# sidecar 注入
+# 内部逻辑是：通过webhook，对default namespace下的pod注入sidecar
+kubectl label namespace default istio-injection=enabled
+
+# productpage会同时调用details和reviews服务
+# reviews服务被部署了三个版本reviews-v1, reviews-v2, reviews-v3
+# reviews 和 ratings 之间的关系? 所有的reviews服务都会调用ratings服务
 samples/bookinfo/platform/kube/bookinfo.yaml
+
+# 创建了一个 Gateway 对象 bookinfo-gateway. 拦截所有80端口端口的请求
+# https://istio.io/latest/docs/setup/getting-started 根据
+# Follow these instructions if your environment does not have an external load balancer and choose a node port instead.
+# 我们通过kind.config将MAC电脑的32581端口暴露出去；
+# 调整k get svc istio-ingressgateway -n istio-system 的node port地址，这样就可以通过127.0.0.1:32581访问productpage服务
+# 创建了一个VirtualService 对象 bookinfo.   路由规则匹配，转发到productpage服务
 samples/bookinfo/networking/bookinfo-gateway.yaml
