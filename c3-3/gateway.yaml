@@ -4,11 +4,11 @@ metadata:
   name: test-gateway
 spec:
   selector:
-    istio: ingressgateway
-  servers:
+    istio: ingressgateway   # istio的默认网关
+  servers:                  # 定义入口点
   - port:
       number: 80
       name: http
       protocol: HTTP
-    hosts:
+    hosts:                  # 过滤特定域名的请求
     - "*"

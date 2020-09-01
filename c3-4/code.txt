@@ -1,5 +1,10 @@
 官方代码：
 samples/sleep/sleep.yaml
 
-//关闭访问
+# 默认允许网格内部服务访问外部访问
+# 关闭访问, 随后的访问会出现502 Bad Gateway
 kubectl get configmap istio -n istio-system -o yaml | sed 's/mode: ALLOW_ANY/mode: REGISTRY_ONLY/g' | kubectl replace -n istio-system -f -
+或
+mesh: |-
+  outboundTrafficPolicy:
+    mode: REGISTRY_ONLY

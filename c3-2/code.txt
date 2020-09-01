@@ -1,3 +1,7 @@
-本课官方代码如下：
+13. 动态路由
+
+# 创建VirtualService
 kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
+
+# 创建DestinationRule
 kubectl apply -f samples/bookinfo/networking/destination-rule-all.yaml
