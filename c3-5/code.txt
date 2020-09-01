@@ -1,4 +1,7 @@
-官方代码：
+流量转移
+
+# 所有流量都走v1版本
 samples/bookinfo/networking/virtual-service-all-v1.yaml
-// 转到v3
+
+# 部分流量转到v3
 samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml

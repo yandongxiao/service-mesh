@@ -15,7 +15,7 @@ spec:
       port: 80
     route:
     - destination:
-        host: istio-egressgateway.istio-system.svc.cluster.local
+        host: istio-egressgateway.istio-system.svc.cluster.local  # 第一跳：内部请求指向网关
         subset: httpbin
         port:
           number: 80
@@ -26,7 +26,7 @@ spec:
       port: 80
     route:
     - destination:
-        host: httpbin.org
+        host: httpbin.org   # 第二跳：将网关的请求指向外部地址
         port:
           number: 80
       weight: 100
@@ -36,6 +36,6 @@ kind: DestinationRule
 metadata:
   name: dr-for-egressgateway
 spec:
-  host: istio-egressgateway.istio-system.svc.cluster.local
+  host: istio-egressgateway.istio-system.svc.cluster.local    # egress网关的DNS名称
   subsets:
   - name: httpbin

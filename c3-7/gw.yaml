@@ -1,10 +1,11 @@
+# istio-egressgateway: 确保网关组件存在
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: istio-egressgateway
 spec:
   selector:
-    istio: egressgateway
+    istio: egressgateway  # 流出网关
   servers:
   - port:
       number: 80

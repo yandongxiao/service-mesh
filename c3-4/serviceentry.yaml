@@ -4,10 +4,10 @@ metadata:
   name: httpbin-ext
 spec:
   hosts:
-  - httpbin.org
+  - httpbin.org     # 外部服务的域名. 你发送curl请求的命令无需任何改变
   ports:
   - number: 80
     name: http
     protocol: HTTP
-  resolution: DNS
-  location: MESH_EXTERNAL
+  resolution: DNS         # 服务发现方式
+  location: MESH_EXTERNAL # MASH_INTERNAL配置选项与物理节点的服务对应

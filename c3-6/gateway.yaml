@@ -4,7 +4,7 @@ metadata:
   name: httpbin-gateway
 spec:
   selector:
-    istio: ingressgateway
+    istio: ingressgateway   # 定义入口网关
   servers:
   - port:
       number: 80

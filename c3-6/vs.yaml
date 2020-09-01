@@ -14,7 +14,7 @@ spec:
     - uri:
         prefix: /delay
     route:
-    - destination:
+    - destination:  # DestinationRule的定义在哪里?
         port:
           number: 8000
         host: httpbin
