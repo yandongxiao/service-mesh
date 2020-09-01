@@ -1,4 +1,7 @@
-官方代码：
+故障注入
+# 故障注入(3.10)
+# Netflix Chaos Monkey；开源；Gremlin(公司)；混沌工程师
+
 kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
 kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
 kubectl apply -f samples/bookinfo/networking/virtual-service-ratings-test-delay.yaml
