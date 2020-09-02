@@ -1,6 +1,6 @@
-# flagger(VMWorks) 特性
-#   1. 支持多种Service Mesh. 如果你想使用flagger，那么就需要有Service Mesh组件(Virtual Service)
-#   2. 指标监控灰度发布状态
+# flagger(WeaveWorks) 特性
+#   1. 支持多种Service Mesh产品. flagger借助Service Mesh实现灰度发布
+#   2. 指标监控灰度发布状态(自动部署和回滚)
 #   3. 通知(slack, Micronsof team)
 #
 # 1. add repo
@@ -48,9 +48,9 @@ spec:
       hosts:
         - "*"
 
-#部署应用和tester
+# 部署应用和tester
 kubectl apply -k github.com/weaveworks/flagger//kustomize/tester
-#或者 先clone repo
+# 或者 先clone repo
 k apply -f deployment.yaml -n demo
 k apply -f service.yaml -n demo
 

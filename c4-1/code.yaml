@@ -1,14 +1,19 @@
 # cicd:
 #   code --> git --> CI_JOBS(UT, testing) --> 镜像仓库 --> 脚本 --> 线上
-#   脚本需要对镜像仓库有只读权限，对CI环境有读写权限
+#   CI_JOBS 需要对git有只读权限，需要对镜像仓库有读写权限
+#   脚本一般属于CI_JOBS的一部分
+#   ** CI_JOBS 需要对集群有操作权限 **
 #
 # gitops(pull request即可完成CICD的过程):
-#   你会有两个git repo，一个是应用的源代码，一个是配置的代码
+#   你会有两个git repo, 一个是应用的源代码，一个是配置的代码
 #   应用的原代码: code --> git --> CI_JOBS --> 镜像仓库
 #   配置的代码: code --> deploy operator --> 从镜像仓库拉取镜像 --> apply
 #   Deloy Opeator: 需要对镜像仓库有只读权限，需要对config repo有只读权限
+#   ** CI_JOBS对集群做到无感知 **
 #
-# flux(VM Works公司): 声明式，自动同步，自动部署，基于代码(pull request)，而不是容器
+# flux(VMWorks公司)
+# The gitops operator for kubernetes
+# 声明式，自动同步，自动部署，基于代码(pull request)，而不是容器
 #
 # 安装flux
 # 1. 安装命令行工具：fluxctl

@@ -1,39 +1,40 @@
+# jaeger组件：client library(不同语言有不同的库), agent(与client library交互，将span发送给collector)
+# collector发送span到DB或者kafka；jaeger query 查询DB
+# Istio 目前基于Envoy实现分布式追踪。对应用不是透明的，应用需要传递header。那么，Istio 与 jaeger 的关系是什么？
+#
+# 其它分布式追踪系统：datadog, skywalking, zipkin
+#
+
 执行清单
 
-# clone repo
+# 一、安装jaeger
+# 1. clone repo
 https://github.com/jaegertracing/jaeger-operator.git
-
-# 修改watch namespace 为空
-WATCH_NAMESPACE = 
-
-# install crd
+# 2. install crd
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/crds/jaegertracing.io_jaegers_crd.yaml
-
-# 创建 ns
+# 3. 创建 ns
 k create ns observability
-
-# 1. install operator
+# 4. install operator
 kubectl create -n observability -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/service_account.yaml
 kubectl create -n observability -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/role.yaml
 kubectl create -n observability -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/role_binding.yaml
+# 修改watch namespace 为空: 监控所有的Namespace
+# WATCH_NAMESPACE =
 kubectl create -n observability -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/operator.yaml
 # install cluster role
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/cluster_role.yaml
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/deploy/cluster_role_binding.yaml
-
-# apply jaeger
+# 5. 创建Jaeger对象。另外创建对应的Pod；Agent，Collector，Query(通过WEB访UI界面)等Service对象
 k apply -f examples/simplest.yaml -n observability
 
-# 2. 集成istio
-# --set values.global.tracer.zipkin.address=<jaeger-collector-service>.<jaeger-collector-namespace>:9411
+
+# 二、集成istio
 istioctl manifest apply \
 --set values.global.tracer.zipkin.address=simplest-collector.observability:9411 \
 --set values.tracing.ingress.enabled=true \
---set values.pilot.traceSampling=100
+--set values.pilot.traceSampling=100        # 采样率
 
-重启pod
-
-#添加注入agent
-sidecar.jaegertracing.io/inject: "true"
+# 注入jaeger-agent容器到应用Pod中
+sidecar.jaegertracing.io/inject: "true"     # 给Deployment或者Namespace添加Annotation，自动注入Container
 
 kubectl patch deployment productpage-v1 -p "{\"spec\":{\"template\":{\"metadata\":{\"labels\":{\"date\":\"`date +'%s'`\"}}}}}"
