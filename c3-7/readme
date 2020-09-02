@@ -1,3 +1,0 @@
-1. egress Gateway VS ServiceEntry
-   - 所有的流量必须经过某些结点
-   - 通过egress作为访问外网的代理

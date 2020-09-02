@@ -6,7 +6,7 @@ spec:
   hosts:
   - "*"
   gateways:
-  - test-gateway    # 配置网关
+  - test-gateway    # NOTE：为Gateway指定路由规则
   http:
   - match:
     - uri:

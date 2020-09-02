@@ -34,7 +34,7 @@ items:
       targetPort: 5601 
       nodePort: 32001
     selector:
-      app: kibana            
+      app: kibana
 - apiVersion: apps/v1beta1
   kind: Deployment
   metadata:
