@@ -15,16 +15,17 @@ items:
         - add_cloud_metadata:
       filebeat.modules:
       - module: system
-      filebeat.inputs:
+      filebeat.inputs:        # 日志收集的路径
       - type: log
         paths:
           - /var/log/containers/*.log
         symlinks: true
-      output.elasticsearch:
+      output.elasticsearch:   # 日志输出的位置
         hosts: ['elasticsearch:9200']
-      logging.level: info        
-- apiVersion: extensions/v1beta1
-  kind: Deployment 
+      logging.level: info
+
+- apiVersion: apps/v1
+  kind: Deployment
   metadata:
     name: filebeat
     labels:
@@ -32,6 +33,9 @@ items:
       kubernetes.io/cluster-service: "true"
   spec:
     replicas: 1
+    selector:
+      matchLabels:
+        app: filebeat
     template:
       metadata:
         name: filebeat
@@ -71,6 +75,7 @@ items:
           - name: filebeat-volume
             configMap:
               name: filebeat-config
+
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRoleBinding
   metadata:
@@ -98,6 +103,7 @@ items:
     - get
     - watch
     - list
+
 - apiVersion: v1
   kind: ServiceAccount
   metadata:

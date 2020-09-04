@@ -1,12 +1,15 @@
 kind: List
 apiVersion: v1
 items:
-- apiVersion: apps/v1beta1
+- apiVersion: apps/v1
   kind: Deployment
   metadata:
     name: kibana
   spec:
     replicas: 1
+    selector:
+      matchLabels:
+        app: kibana
     template:
       metadata:
         name: kibana
@@ -31,16 +34,20 @@ items:
     ports:
     - name: http
       port: 5601
-      targetPort: 5601 
+      targetPort: 5601
       nodePort: 32001
     selector:
       app: kibana
-- apiVersion: apps/v1beta1
+
+- apiVersion: apps/v1
   kind: Deployment
   metadata:
     name: elasticsearch
   spec:
     replicas: 1
+    selector:
+      matchLabels:
+        app: elasticsearch
     template:
       metadata:
         name: elasticsearch
@@ -69,7 +76,7 @@ items:
             emptyDir: {}
 - apiVersion: v1
   kind: Service
-  metadata: 
+  metadata:
     name: elasticsearch-nodeport
   spec:
     type: NodePort
@@ -84,12 +91,13 @@ items:
       nodePort: 32003
     selector:
       app: elasticsearch
-- apiVersion: v1
+
+- apiVersion: v1      # 为什么需要两个service?
   kind: Service
   metadata:
     name: elasticsearch
   spec:
-    clusterIP: None
+    clusterIP: None   # headless service
     ports:
     - name: http
       port: 9200
